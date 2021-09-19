@@ -8,28 +8,10 @@ from api.v1.views import app_views
 from models import storage
 from models.place import Place
 from models.review import Review
+from models.user import User
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
-
-
-def __is_valid_json(data):
-    """
-    Checks if the given data is a valid json.
-
-    Args:
-        data : Data to check
-
-    Returns:
-        True: If data is a valid json.
-        False: If data is not a valid json.
-    """
-    try:
-        json.loads(data)
-
-        return True
-    except Exception:
-        return False
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'])
@@ -120,28 +102,25 @@ def review_create(place_id) -> json:
     if place is None:
         raise NotFound
 
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'user_id' not in data.keys():
+    if 'user_id' not in request.get_json().keys():
         return make_response('Missing user_id', 400)
 
-    if 'text' not in data.keys():
+    user = storage.get(User,  request.get_json()['user_id'])
+
+    if user is None:
+        raise NotFound
+
+    if 'text' not in request.get_json().keys():
         return make_response('Missing text', 400)
 
-    review = Review()
-    review.place_id = place_id
+    data = request.get_json()
+    data['place_id'] = place_id
+    review = Review(**data)
 
-    for key, value in data.items():
-        if key != "place_id":
-            review.__setattr__(key, value)
-
-    storage.new(review)
-    storage.save()
+    review.save()
 
     return make_response(jsonify(review.to_dict()), 201)
 
@@ -157,22 +136,18 @@ def review_update(review_id) -> json:
     Returns:
         json: The updated State object with the status code 200.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     review = storage.get(Review, review_id)
 
     if review is None:
         raise NotFound
 
-    for key, value in data.items():
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
         if key not in ('id', 'place_id', 'created_at', 'updated_at'):
             review.__setattr__(key, value)
 
-    storage.new(review)
-    storage.save()
+    review.save()
 
     return make_response(jsonify(review.to_dict()), 200)
