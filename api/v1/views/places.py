@@ -120,28 +120,20 @@ def place_create(city_id) -> json:
     if city is None:
         raise NotFound
 
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'name' not in data.keys():
+    if 'name' not in request.get_json().keys():
         return make_response('Missing name', 400)
 
-    if 'user_id' not in data.keys():
+    if 'user_id' not in request.get_json().keys():
         return make_response('Missing user_id', 400)
 
-    place = Place()
-    place.city_id = city_id
+    data = request.get_json()
+    data['city_id'] = city_id
+    place = Place(**data)
 
-    for key, value in data.items():
-        if key != "city_id":
-            place.__setattr__(key, value)
-
-    storage.new(place)
-    storage.save()
+    place.save()
 
     return make_response(jsonify(place.to_dict()), 201)
 
@@ -157,22 +149,18 @@ def place_update(place_id) -> json:
     Returns:
         json: The updated State object with the status code 200.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     place = storage.get(Place, place_id)
 
     if place is None:
         raise NotFound
 
-    for key, value in data.items():
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
         if key not in ('id', 'city_id', 'created_at', 'updated_at'):
             place.__setattr__(key, value)
 
-    storage.new(place)
-    storage.save()
+    place.save()
 
     return make_response(jsonify(place.to_dict()), 200)
