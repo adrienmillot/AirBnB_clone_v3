@@ -126,14 +126,12 @@ class ShowUsersApiTest(unittest.TestCase):
         self.assertIn('last_name', json_data, MISSING_LASTNAME_ATTR_MSG)
         self.assertIn('first_name', json_data, MISSING_FIRSTNAME_ATTR_MSG)
         self.assertIn('email', json_data, MISSING_EMAIL_ATTR_MSG)
-        self.assertIn('password', json_data, MISSING_PASSWORD_ATTR_MSG)
         self.assertIn('created_at', json_data, MISSING_CREATED_AT_ATTR_MSG)
         self.assertIn('updated_at', json_data, MISSING_UPDATED_AT_ATTR_MSG)
         self.assertIn('__class__', json_data, MISSING_CLASS_ATTR_MSG)
         self.assertEqual(json_data['last_name'], self.user.last_name)
         self.assertEqual(json_data['first_name'], self.user.first_name)
         self.assertEqual(json_data['email'], self.user.email)
-        self.assertEqual(json_data['password'], self.user.password)
 
     def testNotFound(self):
         """
@@ -231,17 +229,16 @@ class CreateUsersApiTest(unittest.TestCase):
         self.assertEqual(
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
         json_data = response.json()
+        storage.reload()
         user = storage.get(User, json_data['id'])
         self.assertIsInstance(user, User)
         self.assertIn('last_name', json_data, MISSING_LASTNAME_ATTR_MSG)
         self.assertIn('first_name', json_data, MISSING_FIRSTNAME_ATTR_MSG)
         self.assertIn('email', json_data, MISSING_EMAIL_ATTR_MSG)
-        self.assertIn('password', json_data, MISSING_PASSWORD_ATTR_MSG)
         self.assertIn('created_at', json_data, MISSING_CREATED_AT_ATTR_MSG)
         self.assertIn('updated_at', json_data, MISSING_UPDATED_AT_ATTR_MSG)
         self.assertIn('__class__', json_data, MISSING_CLASS_ATTR_MSG)
         self.assertEqual(json_data['email'], 'email')
-        self.assertEqual(json_data['password'], 'password')
         storage.delete(user)
         storage.save()
 
@@ -333,7 +330,6 @@ class UpdateUsersApiTest(unittest.TestCase):
         self.assertIn('last_name', json_data, MISSING_LASTNAME_ATTR_MSG)
         self.assertIn('first_name', json_data, MISSING_FIRSTNAME_ATTR_MSG)
         self.assertIn('email', json_data, MISSING_EMAIL_ATTR_MSG)
-        self.assertIn('password', json_data, MISSING_PASSWORD_ATTR_MSG)
         self.assertIn('created_at', json_data, MISSING_CREATED_AT_ATTR_MSG)
         self.assertIn('updated_at', json_data, MISSING_UPDATED_AT_ATTR_MSG)
         self.assertIn('__class__', json_data, MISSING_CLASS_ATTR_MSG)
