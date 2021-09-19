@@ -70,21 +70,21 @@ class ListUsersApiTest(unittest.TestCase):
 
     def testOnlyUser(self):
         """
-            Test valid list action with Place content only.
+            Test valid list action with User content only.
         """
         state = State(name='toto')
         user = User(last_name='toto', first_name='titi',
                     email='email', password='password')
-        storage.new(state)
-        storage.new(user)
-        storage.save()
+        state.save()
+        user.save()
+
         response = requests.get(url=self.url)
         json_data = response.json()
 
         for element in json_data:
             self.assertEqual(element['__class__'], 'User', WRONG_OBJ_TYPE_MSG)
-        storage.delete(state)
-        storage.delete(user)
+        state.delete()
+        user.delete()
         storage.save()
 
 
@@ -224,7 +224,7 @@ class CreateUsersApiTest(unittest.TestCase):
         """
         data = {'last_name': 'toto', 'first_name': 'titi',
                 'email': 'email', 'password': 'password'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 201, WRONG_STATUS_CODE_MSG)
@@ -250,7 +250,7 @@ class CreateUsersApiTest(unittest.TestCase):
             Test create action when given dict without email key for user.
         """
         data = {'bidule': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -264,7 +264,7 @@ class CreateUsersApiTest(unittest.TestCase):
             Test create action when given dict without password key for user.
         """
         data = {'email': 'email'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -319,14 +319,14 @@ class UpdateUsersApiTest(unittest.TestCase):
         """
         data = {'last_name': 'toto2', 'first_name': 'titi',
                 'email': 'email', 'password': 'password'}
-        response = requests.put(url=self.url, data=json.dumps(data))
+        response = requests.put(url=self.url, json=data)
         headers = response.headers
-        json_data = response.json()
 
         self.assertTrue(self.user == storage.get(User, self.user_id))
         self.assertEqual(response.status_code, 200, WRONG_STATUS_CODE_MSG)
         self.assertEqual(
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
+        json_data = response.json()
         storage.reload()
         user = storage.get(User, self.user_id)
         self.assertEqual(user.last_name, 'toto2')

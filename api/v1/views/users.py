@@ -12,25 +12,6 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
 
 
-def __is_valid_json(data):
-    """
-    Checks if the given data is a valid json.
-
-    Args:
-        data : Data to check
-
-    Returns:
-        True: If data is a valid json.
-        False: If data is not a valid json.
-    """
-    try:
-        json.loads(data)
-
-        return True
-    except Exception:
-        return False
-
-
 @app_views.route('/users', methods=['GET'])
 def users_list() -> json:
     """
@@ -108,24 +89,17 @@ def user_create() -> json:
     Returns:
         json: The new User with the status code 201.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'email' not in data.keys():
+    if 'email' not in request.get_json().keys():
         return make_response('Missing email', 400)
 
-    if 'password' not in data.keys():
+    if 'password' not in request.get_json().keys():
         return make_response('Missing password', 400)
 
-    user = User(data)
-    for key, value in data.items():
-        user.__setattr__(key, value)
-    storage.new(user)
-    storage.save()
+    user = User(**request.get_json())
+    user.save()
 
     return make_response(jsonify(user.to_dict()), 201)
 
@@ -142,22 +116,18 @@ def user_update(user_id) -> json:
         json: The updated State object with the status code 200.
     """
 
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     user = storage.get(User, user_id)
 
     if user is None:
         raise NotFound
 
-    for key, value in data.items():
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
         if key not in ('id', 'created_at', 'updated_at'):
             user.__setattr__(key, value)
 
-    storage.new(user)
-    storage.save()
+    user.save()
 
     return make_response(jsonify(user.to_dict()), 200)

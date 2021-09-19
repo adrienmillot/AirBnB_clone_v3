@@ -12,25 +12,6 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response, abort
 
 
-def __is_valid_json(data):
-    """
-    Checks if the given data is a valid json.
-
-    Args:
-        data : Data to check
-
-    Returns:
-        True: If data is a valid json.
-        False: If data is not a valid json.
-    """
-    try:
-        json.loads(data)
-
-        return True
-    except Exception:
-        return False
-
-
 @app_views.route('/amenities', methods=['GET'])
 def amenities_list() -> json:
     """
