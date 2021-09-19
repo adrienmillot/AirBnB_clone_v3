@@ -261,7 +261,7 @@ class CreateCitiesApiTest(unittest.TestCase):
             Test valid create action tests.
         """
         data = {'name': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 201, WRONG_STATUS_CODE_MSG)
@@ -284,7 +284,7 @@ class CreateCitiesApiTest(unittest.TestCase):
             Test create action when given dict without name key for city.
         """
         data = {'bidule': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -360,14 +360,14 @@ class UpdateCitiesApiTest(unittest.TestCase):
             Test valid update action.
         """
         data = {'name': 'toto2'}
-        response = requests.put(url=self.url, data=json.dumps(data))
+        response = requests.put(url=self.url, json=data)
         headers = response.headers
-        json_data = response.json()
 
         self.assertTrue(self.city == storage.get(City, self.city_id))
         self.assertEqual(response.status_code, 200, WRONG_STATUS_CODE_MSG)
         self.assertEqual(
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
+        json_data = response.json()
         storage.reload()
         city = storage.get(City, self.city_id)
         self.assertEqual(city.name, 'toto2')
