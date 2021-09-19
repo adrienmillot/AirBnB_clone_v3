@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+    Main API application
+"""
 from os import getenv
 from werkzeug.exceptions import NotFound
 from flask import Flask, make_response, jsonify
