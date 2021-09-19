@@ -231,6 +231,7 @@ class CreateUsersApiTest(unittest.TestCase):
         self.assertEqual(
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
         json_data = response.json()
+        storage.reload()
         user = storage.get(User, json_data['id'])
         self.assertIsInstance(user, User)
         self.assertIn('last_name', json_data, MISSING_LASTNAME_ATTR_MSG)
