@@ -8,6 +8,7 @@ from api.v1.views import app_views
 from models import storage
 from models.city import City
 from models.place import Place
+from models.user import User
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
@@ -128,6 +129,11 @@ def place_create(city_id) -> json:
 
     if 'user_id' not in request.get_json().keys():
         return make_response('Missing user_id', 400)
+
+    user = storage.get(User,  request.get_json()['user_id'])
+
+    if user is None:
+        raise NotFound
 
     data = request.get_json()
     data['city_id'] = city_id
