@@ -3,13 +3,12 @@
     API view related to State objects that handles all the default
     actions.
 """
-import requests
 from api.v1.views import app_views
 from models import storage
 from models.state import State
 import json
 from werkzeug.exceptions import BadRequest, NotFound
-from flask import Flask, request, jsonify, make_response, abort
+from flask import request, jsonify, make_response, abort
 
 
 def __is_valid_json(data):
@@ -89,7 +88,7 @@ def delete(state_id) -> json:
     if state is None:
         raise NotFound
 
-    storage.delete(state)
+    state.delete()
     storage.save()
 
     return make_response(jsonify({}), 200)
@@ -108,21 +107,14 @@ def create() -> json:
     Returns:
         json: The new State with the status code 201.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'name' not in data.keys():
+    if 'name' not in request.get_json().keys():
         return make_response('Missing name', 400)
 
-    state = State(data)
-    for key, value in data.items():
-        state.__setattr__(key, value)
-    storage.new(state)
-    storage.save()
+    state = State(**request.get_json())
+    state.save()
 
     return make_response(jsonify(state.to_dict()), 201)
 
@@ -138,22 +130,18 @@ def update(state_id) -> json:
     Returns:
         json: The updated State object with the status code 200.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     state = storage.get(State, state_id)
 
     if state is None:
         raise NotFound
 
-    for key, value in data.items():
-        if key not in ('id', 'created_at', 'updated_at'):
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
+        if key not in ['id', 'created_at', 'updated_at']:
             state.__setattr__(key, value)
 
-    storage.new(state)
-    storage.save()
+    state.save()
 
     return make_response(jsonify(state.to_dict()), 200)
