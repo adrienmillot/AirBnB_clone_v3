@@ -11,27 +11,8 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask import request, jsonify, make_response, abort
 
 
-def __is_valid_json(data):
-    """
-    Checks if the given data is a valid json.
-
-    Args:
-        data : Data to check
-
-    Returns:
-        True: If data is a valid json.
-        False: If data is not a valid json.
-    """
-    try:
-        json.loads(data)
-
-        return True
-    except Exception:
-        return False
-
-
 @app_views.route('/states', methods=['GET'])
-def list() -> json:
+def states_list() -> json:
     """
     Retrieves the list of all State objects.
 
@@ -46,7 +27,7 @@ def list() -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['GET'])
-def show(state_id) -> json:
+def state_show(state_id) -> json:
     """
     Retrieves a specified State object.
 
@@ -69,7 +50,7 @@ def show(state_id) -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
-def delete(state_id) -> json:
+def state_delete(state_id) -> json:
     """
     Deletes a specified State object.
 
@@ -95,7 +76,7 @@ def delete(state_id) -> json:
 
 
 @app_views.route('/states/', methods=['POST'])
-def create() -> json:
+def state_create() -> json:
     """
     Creates a new State object.
 
@@ -120,7 +101,7 @@ def create() -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'])
-def update(state_id) -> json:
+def state_update(state_id) -> json:
     """
     Update a specified State object.
 
