@@ -37,7 +37,10 @@ class User(BaseModel, Base):
 
     def __setattr__(self, name, value):
         if name == 'password':
-            if not hasattr(self, 'password') or value != getattr(self, 'password'):
+            if (
+                not hasattr(self, 'password') or
+                value != getattr(self, 'password')
+            ):
                 value = self.__encode_md5(value)
-        
+
         super(User, self).__setattr__(name, value)
