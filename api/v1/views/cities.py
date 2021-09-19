@@ -12,9 +12,11 @@ from models.state import State
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response, abort
+from flasgger import swag_from
 
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
+@swag_from('../swagger_configs/cities/list.yml')
 def cities_list(state_id) -> json:
     """
     Retrieves the list of all City objects.
@@ -41,6 +43,7 @@ def cities_list(state_id) -> json:
 
 
 @app_views.route('/cities/<city_id>', methods=['GET'])
+@swag_from('../swagger_configs/cities/show.yml')
 def city_show(city_id) -> json:
     """
     Retrieves a specified City object.
@@ -64,6 +67,7 @@ def city_show(city_id) -> json:
 
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/cities/delete.yml')
 def city_delete(city_id) -> json:
     """
     Deletes a specified City object.
@@ -90,6 +94,7 @@ def city_delete(city_id) -> json:
 
 
 @app_views.route('/states/<state_id>/cities/', methods=['POST'])
+@swag_from('../swagger_configs/cities/create.yml')
 def city_create(state_id) -> json:
     """
     Creates a new City object.
@@ -130,6 +135,7 @@ def city_create(state_id) -> json:
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'])
+@swag_from('../swagger_configs/cities/update.yml')
 def city_update(city_id) -> json:
     """
     Update a specified City object.

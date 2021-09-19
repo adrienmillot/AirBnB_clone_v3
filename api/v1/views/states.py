@@ -9,9 +9,11 @@ from models.state import State
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import request, jsonify, make_response, abort
+from flasgger import swag_from
 
 
 @app_views.route('/states', methods=['GET'])
+@swag_from('../swagger_configs/states/list.yml')
 def states_list() -> json:
     """
     Retrieves the list of all State objects.
@@ -27,6 +29,7 @@ def states_list() -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['GET'])
+@swag_from('../swagger_configs/states/show.yml')
 def state_show(state_id) -> json:
     """
     Retrieves a specified State object.
@@ -50,6 +53,7 @@ def state_show(state_id) -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/states/delete.yml')
 def state_delete(state_id) -> json:
     """
     Deletes a specified State object.
@@ -76,6 +80,7 @@ def state_delete(state_id) -> json:
 
 
 @app_views.route('/states/', methods=['POST'])
+@swag_from('../swagger_configs/states/create.yml')
 def state_create() -> json:
     """
     Creates a new State object.
@@ -101,6 +106,7 @@ def state_create() -> json:
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'])
+@swag_from('../swagger_configs/states/update.yml')
 def state_update(state_id) -> json:
     """
     Update a specified State object.

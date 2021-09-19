@@ -10,9 +10,11 @@ from models.amenity import Amenity
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response, abort
+from flasgger import swag_from
 
 
 @app_views.route('/amenities', methods=['GET'])
+@swag_from('../swagger_configs/amenities/list.yml')
 def amenities_list() -> json:
     """
     Retrieves the list of all Amenity objects.
@@ -28,6 +30,7 @@ def amenities_list() -> json:
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['GET'])
+@swag_from('../swagger_configs/amenities/show.yml')
 def amenity_show(amenity_id) -> json:
     """
     Retrieves a specified Amenity object.
@@ -51,6 +54,7 @@ def amenity_show(amenity_id) -> json:
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/amenities/delete.yml')
 def amenity_delete(amenity_id) -> json:
     """
     Deletes a specified Amenity object.
@@ -77,6 +81,7 @@ def amenity_delete(amenity_id) -> json:
 
 
 @app_views.route('/amenities/', methods=['POST'])
+@swag_from('../swagger_configs/amenities/create.yml')
 def amenity_create() -> json:
     """
     Creates a new Amenity object.
@@ -102,6 +107,7 @@ def amenity_create() -> json:
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'])
+@swag_from('../swagger_configs/amenities/update.yml')
 def amenity_update(amenity_id) -> json:
     """
     Update a specified Amenity object.
