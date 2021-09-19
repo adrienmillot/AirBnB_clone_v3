@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+    First endpoint that return the status of the API.
+"""
 from flask import jsonify
 from api.v1.views import app_views
 from models import storage
