@@ -368,7 +368,7 @@ class CreateReviewsApiTest(unittest.TestCase):
         self.assertTrue(self.place == storage.get(Place, self.place_id))
         data = {'text': 'toto', 'user_id': self.user_id,
                 'place_id': self.place_id}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 201, WRONG_STATUS_CODE_MSG)
@@ -394,7 +394,7 @@ class CreateReviewsApiTest(unittest.TestCase):
             Test create action when given dict without user_id key for user.
         """
         data = {'bidule': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -408,7 +408,7 @@ class CreateReviewsApiTest(unittest.TestCase):
             Test create action when given dict without text key for user.
         """
         data = {'user_id': self.user_id}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -503,7 +503,7 @@ class UpdateReviewApiTest(unittest.TestCase):
             Test valid update action.
         """
         data = {'text': 'toto2'}
-        response = requests.put(url=self.url, data=json.dumps(data))
+        response = requests.put(url=self.url, json=data)
         headers = response.headers
         json_data = response.json()
 
@@ -545,7 +545,7 @@ class UpdateReviewApiTest(unittest.TestCase):
             Test update action when given wrong review_id or no ID at all.
         """
         data = {'text': 'toto'}
-        response = requests.put(url=self.invalid_url, data=json.dumps(data))
+        response = requests.put(url=self.invalid_url, json=data)
         headers = response.headers
         json_data = response.json()
 
