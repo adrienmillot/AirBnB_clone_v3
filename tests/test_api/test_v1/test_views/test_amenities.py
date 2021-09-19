@@ -205,7 +205,7 @@ class CreateAmenitiesApiTest(unittest.TestCase):
             Test valid create action tests.
         """
         data = {'name': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 201, WRONG_STATUS_CODE_MSG)
@@ -227,7 +227,7 @@ class CreateAmenitiesApiTest(unittest.TestCase):
             Test create action when given dict without name key for Amenity.
         """
         data = {'bidule': 'toto'}
-        response = requests.post(url=self.url, data=json.dumps(data))
+        response = requests.post(url=self.url, json=data)
         headers = response.headers
 
         self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
@@ -280,14 +280,14 @@ class UpdateAmenitiesApiTest(unittest.TestCase):
             Test valid update action.
         """
         data = {'name': 'toto2'}
-        response = requests.put(url=self.url, data=json.dumps(data))
+        response = requests.put(url=self.url, json=data)
         headers = response.headers
-        json_data = response.json()
 
         self.assertTrue(self.amenity == storage.get(Amenity, self.amenity_id))
         self.assertEqual(response.status_code, 200, WRONG_STATUS_CODE_MSG)
         self.assertEqual(
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
+        json_data = response.json()
         storage.reload()
         amenity = storage.get(Amenity, self.amenity_id)
         self.assertEqual(amenity.name, 'toto2')
@@ -318,7 +318,7 @@ class UpdateAmenitiesApiTest(unittest.TestCase):
             Test update action when given a wrong ID.
         """
         data = {'name': 'toto'}
-        response = requests.put(url=self.invalid_url, data=json.dumps(data))
+        response = requests.put(url=self.invalid_url, json=data)
         headers = response.headers
         json_data = response.json()
 

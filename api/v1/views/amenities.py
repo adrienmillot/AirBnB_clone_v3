@@ -138,22 +138,18 @@ def amenity_update(amenity_id) -> json:
     Returns:
         json: The updated Amenity object with the status code 200.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     amenity = storage.get(Amenity, amenity_id)
 
     if amenity is None:
         raise NotFound
 
-    for key, value in data.items():
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
         if key not in ('id', 'created_at', 'updated_at'):
             amenity.__setattr__(key, value)
 
-    storage.new(amenity)
-    storage.save()
+    amenity.save()
 
     return make_response(jsonify(amenity.to_dict()), 200)

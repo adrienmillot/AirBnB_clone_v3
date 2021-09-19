@@ -165,22 +165,18 @@ def city_update(city_id) -> json:
     Returns:
         json: The updated City object with the status code 200.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
-        return make_response('Not a JSON', 400)
-
-    data = json.loads(data)
     city = storage.get(City, city_id)
 
     if city is None:
         raise NotFound
 
-    for key, value in data.items():
+    if not request.json:
+        return make_response('Not a JSON', 400)
+
+    for key, value in request.get_json().items():
         if key not in ('id', 'state_id', 'created_at', 'updated_at'):
             city.__setattr__(key, value)
 
-    storage.new(city)
-    storage.save()
+    city.save()
 
     return make_response(jsonify(city.to_dict()), 200)
