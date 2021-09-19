@@ -133,23 +133,15 @@ def city_create(state_id) -> json:
     if state is None:
         raise NotFound
 
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'name' not in data.keys():
+    if 'name' not in request.json:
         return make_response('Missing name', 400)
 
-    city = City(state_id=state_id)
+    city = City(**request.get_json(), state_id=state_id)
 
-    for key, value in data.items():
-        if key is not "state_id":
-            city.__setattr__(key, value)
-    storage.new(city)
-    storage.save()
+    city.save()
 
     return make_response(jsonify(city.to_dict()), 201)
 
