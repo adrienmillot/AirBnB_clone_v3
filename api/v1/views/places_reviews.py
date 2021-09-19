@@ -12,9 +12,11 @@ from models.user import User
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
+from flasgger import swag_from
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'])
+@swag_from('../swagger_configs/places_reviews/list.yml')
 def reviews_list(place_id) -> json:
     """
     Retrieves the list of all Review objects.
@@ -36,6 +38,7 @@ def reviews_list(place_id) -> json:
 
 
 @app_views.route('/reviews/<review_id>', methods=['GET'])
+@swag_from('../swagger_configs/places_reviews/show.yml')
 def review_show(review_id) -> json:
     """
     Retrieves a specified Review object.
@@ -59,6 +62,7 @@ def review_show(review_id) -> json:
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/places_reviews/delete.yml')
 def review_delete(review_id) -> json:
     """
     Deletes a specified Review object.
@@ -85,6 +89,7 @@ def review_delete(review_id) -> json:
 
 
 @app_views.route('/places/<place_id>/reviews/', methods=['POST'])
+@swag_from('../swagger_configs/places_reviews/create.yml')
 def review_create(place_id) -> json:
     """
     Creates a new Review object.
@@ -126,6 +131,7 @@ def review_create(place_id) -> json:
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'])
+@swag_from('../swagger_configs/places_reviews/update.yml')
 def review_update(review_id) -> json:
     """
     Update a specified Review object.

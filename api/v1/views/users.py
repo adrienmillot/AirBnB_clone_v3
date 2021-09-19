@@ -10,9 +10,11 @@ from models.user import User
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
+from flasgger import swag_from
 
 
 @app_views.route('/users', methods=['GET'])
+@swag_from('../swagger_configs/users/list.yml')
 def users_list() -> json:
     """
     Retrieves the list of all User objects.
@@ -28,6 +30,7 @@ def users_list() -> json:
 
 
 @app_views.route('/users/<user_id>', methods=['GET'])
+@swag_from('../swagger_configs/users/show.yml')
 def user_show(user_id) -> json:
     """
     Retrieves a specified User object.
@@ -51,6 +54,7 @@ def user_show(user_id) -> json:
 
 
 @app_views.route('/users/<user_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/users/delete.yml')
 def user_delete(user_id) -> json:
     """
     Deletes a specified User object.
@@ -77,6 +81,7 @@ def user_delete(user_id) -> json:
 
 
 @app_views.route('/users/', methods=['POST'])
+@swag_from('../swagger_configs/users/create.yml')
 def user_create() -> json:
     """
     Creates a new User object.
@@ -105,6 +110,7 @@ def user_create() -> json:
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'])
+@swag_from('../swagger_configs/users/update.yml')
 def user_update(user_id) -> json:
     """
     Update a specified State object.

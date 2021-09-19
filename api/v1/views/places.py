@@ -12,6 +12,7 @@ from models.user import User
 import json
 from werkzeug.exceptions import BadRequest, NotFound
 from flask import Flask, request, jsonify, make_response
+from flasgger import swag_from
 
 
 def __is_valid_json(data):
@@ -34,6 +35,7 @@ def __is_valid_json(data):
 
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'])
+@swag_from('../swagger_configs/places/list.yml')
 def places_list(city_id) -> json:
     """
     Retrieves the list of all Place objects.
@@ -55,6 +57,7 @@ def places_list(city_id) -> json:
 
 
 @app_views.route('/places/<place_id>', methods=['GET'])
+@swag_from('../swagger_configs/places/show.yml')
 def place_show(place_id) -> json:
     """
     Retrieves a specified Place object.
@@ -78,6 +81,7 @@ def place_show(place_id) -> json:
 
 
 @app_views.route('/places/<place_id>', methods=['DELETE'])
+@swag_from('../swagger_configs/places/delete.yml')
 def place_delete(place_id) -> json:
     """
     Deletes a specified Place object.
@@ -104,6 +108,7 @@ def place_delete(place_id) -> json:
 
 
 @app_views.route('/cities/<city_id>/places/', methods=['POST'])
+@swag_from('../swagger_configs/places/create.yml')
 def place_create(city_id) -> json:
     """
     Creates a new Place object.
@@ -145,6 +150,7 @@ def place_create(city_id) -> json:
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'])
+@swag_from('../swagger_configs/places/update.yml')
 def place_update(place_id) -> json:
     """
     Update a specified Place object.
