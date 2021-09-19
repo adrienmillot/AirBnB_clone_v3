@@ -132,7 +132,7 @@ def city_create(state_id) -> json:
 
     if state is None:
         raise NotFound
-    
+
     if not request.json:
         return make_response('Not a JSON', 400)
 
