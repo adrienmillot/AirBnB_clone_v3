@@ -20,6 +20,7 @@ def teardown(exception):
     """
     storage.close()
 
+
 @app.errorhandler(NotFound)
 def handle_not_found(e):
     """
