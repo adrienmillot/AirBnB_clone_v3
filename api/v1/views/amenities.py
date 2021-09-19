@@ -108,21 +108,14 @@ def amenity_create() -> json:
     Returns:
         json: The new Amenity with the status code 201.
     """
-    data = request.get_data()
-
-    if not __is_valid_json(data):
+    if not request.json:
         return make_response('Not a JSON', 400)
 
-    data = json.loads(data)
-
-    if 'name' not in data.keys():
+    if 'name' not in request.get_json().keys():
         return make_response('Missing name', 400)
 
-    amenity = Amenity(data)
-    for key, value in data.items():
-        amenity.__setattr__(key, value)
-    storage.new(amenity)
-    storage.save()
+    amenity = Amenity(**request.get_json())
+    amenity.save()
 
     return make_response(jsonify(amenity.to_dict()), 201)
 
