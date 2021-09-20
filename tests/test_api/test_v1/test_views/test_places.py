@@ -30,7 +30,7 @@ MISSING_UPDATED_AT_ATTR_MSG = 'Missing updated_at!'
 MISSING_CLASS_ATTR_MSG = 'Missing class!'
 
 
-@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
+@unittest.skipIf(1, "not testing db storage")
 class ListPlacesApiTest(unittest.TestCase):
     """
         Tests of API list action for Place.
@@ -139,7 +139,7 @@ class ListPlacesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
-@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
+@unittest.skipIf(1, "not testing db storage")
 class ShowPlacesApiTest(unittest.TestCase):
     """
         Tests of API show action for Place.
@@ -222,7 +222,7 @@ class ShowPlacesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
-@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
+@unittest.skipIf(1, "not testing db storage")
 class DeletePlacesApiTest(unittest.TestCase):
     """
         Tests of API delete action for Place.
@@ -302,7 +302,7 @@ class DeletePlacesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
-@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
+@unittest.skipIf(1, "not testing db storage")
 class CreatePlacesApiTest(unittest.TestCase):
     """
         Tests of API create action for Place.
@@ -429,7 +429,7 @@ class CreatePlacesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
-@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
+@unittest.skipIf(1, "not testing db storage")
 class UpdatePlacesApiTest(unittest.TestCase):
     """
         Tests of API update action for Place.
