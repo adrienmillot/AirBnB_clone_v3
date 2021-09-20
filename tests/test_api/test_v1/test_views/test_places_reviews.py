@@ -6,13 +6,13 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-import os
+from os import getenv
 import requests
 import unittest
 
 
-host = os.environ['HBNB_API_HOST']
-port = os.environ['HBNB_API_PORT']
+host = getenv('HBNB_API_HOST', '0.0.0.0')
+port = getenv('HBNB_API_PORT', '5000')
 version = '/v1'
 api_url = 'http://{}:{}/api{}'.format(host, port, version)
 
