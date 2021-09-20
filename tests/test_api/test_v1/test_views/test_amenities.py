@@ -23,6 +23,7 @@ MISSING_UPDATED_AT_ATTR_MSG = 'Missing updated_at!'
 MISSING_CLASS_ATTR_MSG = 'Missing class!'
 
 
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
 class ListAmenitiesApiTest(unittest.TestCase):
     """
         Tests of API list action for Amenity.
@@ -80,6 +81,7 @@ class ListAmenitiesApiTest(unittest.TestCase):
         storage.save()
 
 
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
 class ShowAmenitiesApiTest(unittest.TestCase):
     """
         Tests of API show action for Amenity.
@@ -134,6 +136,7 @@ class ShowAmenitiesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
 class DeleteAmenitiesApiTest(unittest.TestCase):
     """
         Tests of API delete action for Amenity.
@@ -189,6 +192,7 @@ class DeleteAmenitiesApiTest(unittest.TestCase):
         self.assertEqual(json_data['error'], 'Not found')
 
 
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
 class CreateAmenitiesApiTest(unittest.TestCase):
     """
         Tests of API create action for Amenity.
@@ -251,6 +255,7 @@ class CreateAmenitiesApiTest(unittest.TestCase):
         self.assertEqual(response.content, b'Not a JSON')
 
 
+@unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db', "not testing db storage")
 class UpdateAmenitiesApiTest(unittest.TestCase):
     """
         Tests of API update action for Amenity.
