@@ -161,7 +161,8 @@ def place_update(place_id) -> json:
 
 @app_views.route('/places_search', methods=['POST'])
 def places_search() -> json:
-    if not request.json and not json.dumps(request.json):
+    kwargs = request.get_json()
+    if type(kwargs) is not dict:
         return make_response('Not a JSON', 400)
 
     places = storage.all(Place)
