@@ -15,25 +15,6 @@ from flask import Flask, request, jsonify, make_response
 from flasgger import swag_from
 
 
-def __is_valid_json(data):
-    """
-    Checks if the given data is a valid json.
-
-    Args:
-        data : Data to check
-
-    Returns:
-        True: If data is a valid json.
-        False: If data is not a valid json.
-    """
-    try:
-        json.loads(data)
-
-        return True
-    except Exception:
-        return False
-
-
 @app_views.route('/cities/<city_id>/places', methods=['GET'])
 @swag_from('../swagger_configs/places/list.yml')
 def places_list(city_id) -> json:
@@ -176,3 +157,47 @@ def place_update(place_id) -> json:
     place.save()
 
     return make_response(jsonify(place.to_dict()), 200)
+
+@app_views.route('/places_search', methods=['POST'])
+def places_search() -> json:
+    if not json.dumps(request.get_data()):
+        return make_response('Not a JSON', 400)
+
+    places = storage.all(Place)
+    places_list = []
+    for place in places:
+        places_list.append(place.to_dict())
+
+    if len(request.get_json()) == 0:
+        return make_response(jsonify(places_list), 200)
+
+    if 'states' in request.get_json().keys() and 'cities' in request.get_json().keys():
+        for place in places:
+            city = storage.get(City, place['city_id'])
+            if (
+                (
+                    city.state_id in request.get_json()['states'] and
+                    place['city_id'] in request.get_json()['cities']
+                ) or
+                place['city_id'] in request.get_json()['cities']
+            ):
+                del place
+
+        return make_response(jsonify(places_list), 200)
+
+    if 'states' in request.get_json().keys():
+        for place in places:
+            city = storage.get(City, place['city_id'])
+            if city.state_id in request.get_json()['states']:
+                del place
+
+        return make_response(jsonify(places_list), 200)
+
+    if 'cities' in request.get_json().keys():
+        for place in places:
+            if place['city_id'] in request.get_json()['cities']:
+                del place
+
+        return make_response(jsonify(places_list), 200)
+
+    return make_response(jsonify({}), 200)
