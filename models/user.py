@@ -30,12 +30,18 @@ class User(BaseModel, Base):
         super().__init__(*args, **kwargs)
 
     def __encode_md5(self, string: str) -> str:
+        """
+            Encode a string with md5
+        """
         md5 = hashlib.md5()
         md5.update(string.encode('utf-8'))
 
         return md5.hexdigest()
 
     def __setattr__(self, name, value):
+        """
+            Encode password at init and update
+        """
         if name == 'password':
             if (
                 not hasattr(self, 'password') or
