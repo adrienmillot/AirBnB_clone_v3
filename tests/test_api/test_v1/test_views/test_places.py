@@ -5,13 +5,13 @@ from models.state import State
 from models.city import City
 from models.place import Place
 from models.user import User
-import os
+from os import getenv
 import requests
 import unittest
 
 
-host = os.environ['HBNB_API_HOST']
-port = os.environ['HBNB_API_PORT']
+host = getenv('HBNB_API_HOST', '0.0.0.0')
+port = getenv('HBNB_API_PORT', '5000')
 version = '/v1'
 api_url = 'http://{}:{}/api{}'.format(host, port, version)
 
@@ -528,3 +528,82 @@ class UpdatePlacesApiTest(unittest.TestCase):
             headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
         self.assertIn('error', json_data)
         self.assertEqual(json_data['error'], 'Not found')
+
+
+class SearchPlacesApiTest(unittest.TestCase):
+    """
+        Tests of API search action for Place.
+    """
+
+    def setUp(self) -> None:
+        """
+            Set up API create action.
+        """
+        self.url = '{}/places_search'.format(api_url)
+
+    def tearDown(self) -> None:
+        """
+            Tear down table Place of database used for tests.
+        """
+        pass
+
+    def testSearchWithEmptyData(self):
+        data = {}
+        self.__testSearch(data)
+
+    def testSearchWithStatesData(self):
+        data = {"states": []}
+        self.__testSearch(data)
+
+    def testSearchWithCitiesData(self):
+        data = {"cities": []}
+        self.__testSearch(data)
+
+    def testSearchWithAmenitiesData(self):
+        data = {"amenities": []}
+        self.__testSearch(data)
+
+    def testSearchWithEmptyStatesData(self):
+        data = {"states": []}
+        self.__testSearchWithEmptyData(data)
+
+    def testSearchWithEmptyCitiesData(self):
+        data = {"cities": []}
+        self.__testSearchWithEmptyData(data)
+
+    def testSearchWithEmptyAmenitiesData(self):
+        data = {"amenities": []}
+        self.__testSearchWithEmptyData(data)
+
+    def testNotAJson(self):
+        """
+            # Test update action when given wrong data format.
+        """
+        data = {'text': 'toto'}
+        response = requests.post(url=self.url, data=data)
+        headers = response.headers
+
+        self.assertEqual(response.status_code, 400, WRONG_STATUS_CODE_MSG)
+        self.assertEqual(
+            headers['Content-Type'], 'text/html; charset=utf-8',
+            WRONG_TYPE_RETURN_MSG)
+        self.assertEqual(response.content, b'Not a JSON')
+
+    def __testSearch(self, data):
+        response = requests.post(url=self.url, json=data)
+        headers = response.headers
+
+        self.assertEqual(response.status_code, 200, WRONG_STATUS_CODE_MSG)
+        self.assertEqual(
+            headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
+
+    def __testSearchWithEmptyData(self, data):
+        response = requests.post(url=self.url, json=data)
+        headers = response.headers
+
+        self.assertEqual(response.status_code, 200, WRONG_STATUS_CODE_MSG)
+        self.assertEqual(
+            headers['Content-Type'], 'application/json', WRONG_TYPE_RETURN_MSG)
+        storage_count = len(storage.all(Place))
+        json_data = response.json()
+        self.assertEqual(storage_count, len(json_data))
