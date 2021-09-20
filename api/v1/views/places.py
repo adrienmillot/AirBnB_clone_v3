@@ -158,6 +158,7 @@ def place_update(place_id) -> json:
 
     return make_response(jsonify(place.to_dict()), 200)
 
+
 @app_views.route('/places_search', methods=['POST'])
 def places_search() -> json:
     if not json.dumps(request.get_data()):
@@ -171,7 +172,10 @@ def places_search() -> json:
     if len(request.get_json()) == 0:
         return make_response(jsonify(places_list), 200)
 
-    if 'states' in request.get_json().keys() and 'cities' in request.get_json().keys():
+    if (
+        'states' in request.get_json().keys() and
+        'cities' in request.get_json().keys()
+    ):
         for place in places:
             city = storage.get(City, place['city_id'])
             if (
