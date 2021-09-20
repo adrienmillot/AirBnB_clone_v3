@@ -161,12 +161,12 @@ def place_update(place_id) -> json:
 
 @app_views.route('/places_search', methods=['POST'])
 def places_search() -> json:
-    if not json.dumps(request.get_data()):
+    if not request.json and not json.dumps(request.json):
         return make_response('Not a JSON', 400)
 
     places = storage.all(Place)
     places_list = []
-    for place in places:
+    for key, place in places.items():
         places_list.append(place.to_dict())
 
     if len(request.get_json()) == 0:
